@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>CS 242 Search Web UI</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+
+
+    <script type="text/javascript" charset="utf-8">
+
+        var getUrlParameter = function getUrlParameter(sParam) {
+            var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+                sURLVariables = sPageURL.split('&'),
+                sParameterName,
+                i;
+
+            for (i = 0; i < sURLVariables.length; i++) {
+                sParameterName = sURLVariables[i].split('=');
+
+                if (sParameterName[0] === sParam) {
+                    return sParameterName[1] === undefined ? true : sParameterName[1];
+                }
+            }
+        };
+
+
+        $(document).ready(function () {
+
+            var q_e = getUrlParameter('e');
+            if (q_e === 'lucene') {
+                $('input:radio[name=rbnEngine]:nth(0)').attr('checked',true);
+            } else {
+                $('input:radio[name=rbnEngine]:nth(1)').attr('checked',true);
+            }
+
+            $(document).keypress(function (e) {
+                if (e.which === 13) {
+                    var q = $('#query').val();
+                    var e = $('input[name=rbnEngine]:checked').val();
+
+                    window.location = "/search?e=" + e + "&q=" + q;
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+
+<div class="container">
+    <div>
+        <div style="display: inline-block;margin:10px;">
+            <h4>CS 242 Search UI</h4>
+        </div>
+    </div>
+
+    <div style="display: inline-block;">
+        <div style="margin-left:0px; display: inline-block;">
+            <input style="width: 200px;margin: 10px;" type="text" id="query" placeholder="Search" value="{{ query }}">
+
+            <input type="radio" id="rdLucene" name="rbnEngine" value="lucene"/>
+            <label for="rdLucene">Lucene</label>
+            <input type="radio" id="rdInverted" name="rbnEngine" value="ii"/>
+            <label for="rdInverted">Inverted Index via Hadoop</label>
+        </div>
+    </div>
+
+    <table id="results" border="0" cellpadding="2" cellspacing="2" style="margin: 10px;">
+        <tbody>
+        {% for r in results %}
+            <tr>
+                <td><a style="font-size: medium;" href="{{ r.url }}">
+                    {{ r.title | truncate(100) }}
+                </a></td>
+            <tr>
+            <tr>
+                <td style="color: darkgreen">{{ r.url }}</td>
+            <tr>
+            <tr>
+                <td>{{ r.snippet | safe }}</td>
+            <tr>
+            <tr>
+                <td>&nbsp</td>
+            <tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
+
